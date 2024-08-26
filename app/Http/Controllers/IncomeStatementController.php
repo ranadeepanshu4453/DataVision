@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Imports\CompaniesImport;
 use App\Imports\IncomeStatementImport;
+use App\Models\BoldValue;
 use App\Models\Company;
 use App\Models\IncomeStatement;
 use Illuminate\Http\Request;
@@ -18,6 +19,7 @@ class IncomeStatementController extends Controller
     //
     public function import(Request $request)
     {
+       
         
         $request->validate([
             'file' => 'required|mimes:xlsx,xls|max:2048', // Limit file size to 2MB
@@ -29,18 +31,18 @@ class IncomeStatementController extends Controller
         $import = new IncomeStatementImport($fullPath);
         Excel::import($import, $fullPath);
         $this->boldEnties= $import->getBoldData();
+
+        session(['boldEnties' => $this->boldEnties]);
         // Import the Excel file
         // Excel::import(new IncomeStatementImport, $request->file('file'));
     //    $bolddata= Excel::import(new IncomeStatementImport($fullPath),storage_path('app/' . $path));
         // Excel::import(new CompaniesImport, $request->file('file'));
-        
-        
-        
-        
+            
         return redirect()->route('dashboard')->with('success', 'Data imported successfully!');
     }
 
     public function erase(){
+        
         IncomeStatement::truncate();
         Company::truncate();
         return back();
@@ -56,37 +58,46 @@ class IncomeStatementController extends Controller
         return view('dashboard', compact('companies'));
     }
 
-    public function chart($id){
-            
-        $categoriesToCheck = [
-            'Net sales',
-            'Cost of sales',
-            'Gross margin',
-            'Operating expenses',
-            'Operating income',
-            'Other income (expense), net',
-            'Income before provision for income taxes',
-            'Net income',
-        ];
 
+    public function chart($id)
+    {
+        // Retrieve the bold entries from the session
+        $this->boldEnties = session('boldEnties', []);
+    
+        if (!empty($this->boldEnties)) {
+            // Store the bold values in the database if they exist
+            BoldValue::create([
+                'company_id' => $id,
+                'bold_values' => json_encode($this->boldEnties),
+            ]);
+        }
+    
+        // Delete the bold entries from the session after storage
+        session()->forget('boldEnties');
+    
+        // Retrieve stored bold values from the database
+        $storedBoldValues = BoldValue::where('company_id', $id)->pluck('bold_values')->first();
+        $categoriesToCheck = !empty($this->boldEnties) ? $this->boldEnties : json_decode($storedBoldValues, true);
+    
         $groupedDataByCategory = [];
-
-    // Loop through each category and group data by date
-    foreach ($categoriesToCheck as $category) {
-
-        $filteredData = IncomeStatement::where('company_id', $id)->where('category', $category)
-                                       ->orderBy('date')
-                                       ->get()
-                                       ->groupBy('date');
-
-        // Store the grouped data in the array with the category as the key
-        $groupedDataByCategory[$category] = $filteredData;
-    }
-                    
+    
+        // Loop through each category and group data by date
+        foreach ($categoriesToCheck as $category) {
+            $filteredData = IncomeStatement::where('company_id', $id)
+                                            ->where('category', $category)
+                                            ->orderBy('date')
+                                            ->get()
+                                            ->groupBy('date');
+    
+            // Store the grouped data in the array with the category as the key
+            $groupedDataByCategory[$category] = $filteredData;
+        }
+    
         return view('income.chart', [
             'data' => $groupedDataByCategory,
         ]);
     }
+    
 
     public function logout(){
         Auth::logout();

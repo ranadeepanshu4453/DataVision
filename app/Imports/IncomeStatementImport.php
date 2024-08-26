@@ -3,6 +3,7 @@ namespace App\Imports;
 
 use App\Models\Company;
 use App\Models\IncomeStatement;
+use Carbon\Carbon;
 use Maatwebsite\Excel\Concerns\ToCollection;
 use Illuminate\Support\Collection;
 use PhpOffice\PhpSpreadsheet\IOFactory;
@@ -30,13 +31,13 @@ class IncomeStatementImport implements ToCollection
         //fetching all bold entries from file
         $this->BoldCells($rows);
         //---------------->
-
+        
         // dd($rows[0][0].$rows[1][0]);
         // $cellValue = $rows->getActiveSheet()->getCell('A6')->getFormattedValue();
         // dd($cellValue);
         // dd($this->OriginalFileName);
         $company_name = (string) $rows[0][0].$rows[1][0];
-        // $company_name ="Google";
+        // $company_name ="Meta";
         // dd((string) $rows[0][0].$rows[1][0]);
         $existingCompany = Company::where('name', $company_name)->first();
 
@@ -71,13 +72,15 @@ class IncomeStatementImport implements ToCollection
             
             for ($i = 1; $i < count($row); $i++) {
                 $value = $row[$i]; 
+                // $value = Calculation::getCalculatedValue($row[$i]);
+
 
 
                 if ($value !== null) {
                     if($category=='12 months ended:'){
                         continue;
                     }
-                    $date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($this->getDateByIndex($i));
+                    $date = Carbon::instance(\PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($this->getDateByIndex($i)));
                     IncomeStatement::updateOrCreate(
                         [
                             'category' => $category,

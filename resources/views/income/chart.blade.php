@@ -1,17 +1,21 @@
 <x-app-layout>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
     <x-slot name="header">
         <div class="flex justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
                 {{ __('Charts') }} 
             </h2>
         </div>
-        <a href="{{ route('company') }}" class="text-blue-600 hover:text-blue-800 flex items-center ml-auto">
+        <a href="{{ route('company') }}" class="text-blue-600 hover:text-blue-800 flex items-center ml-auto float-right">
         <!-- Back Arrow Icon -->
         <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
         </svg>
         Back
-    </a>
+    </a><br><br>
+    <button id="printBtn" class="btn text-blue-600" onclick="window.print()">Print PDF</button>
+
     </x-slot>
 
     @section('content')
@@ -92,5 +96,32 @@
                 });
             });
         </script>
+
+
+                    <script>
+                        document.getElementById('printBtn').addEventListener('click', function () {
+    const { jsPDF } = window.jspdf;
+
+    const doc = new jsPDF();
+    
+    // You can get the content of the screen using the HTML element
+    let content = document.getElementById('content-to-print'); // Replace with your content's ID
+
+    doc.html(content, {
+        callback: function (doc) {
+            // Save the generated PDF
+            doc.save('screen-data.pdf');
+        },
+        x: 10,
+        y: 10,
+        width: 190, // Adjust width
+        windowWidth: 650 // Adjust window width to your content's width
+    });
+});
+
+                    </script>
+
+
+
     @endpush
 </x-app-layout>
