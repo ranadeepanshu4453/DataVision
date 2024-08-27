@@ -15,6 +15,7 @@ class IncomeStatementController extends Controller
 {
    
     public $boldEnties= [];
+    public $updatedStatus=[];
     
     //
     public function import(Request $request)
@@ -31,22 +32,50 @@ class IncomeStatementController extends Controller
         $import = new IncomeStatementImport($fullPath);
         Excel::import($import, $fullPath);
         $this->boldEnties= $import->getBoldData();
+        $this->updatedStatus=$import->updatedstatus();
 
-        session(['boldEnties' => $this->boldEnties]);
+        session(['boldEnties' => $this->boldEnties[0]]);
         // Import the Excel file
         // Excel::import(new IncomeStatementImport, $request->file('file'));
     //    $bolddata= Excel::import(new IncomeStatementImport($fullPath),storage_path('app/' . $path));
         // Excel::import(new CompaniesImport, $request->file('file'));
+
+        $c_id=Company::latest()->first()->id;
+        if($this->updatedStatus[0]==true){
+            return redirect()->route('update.company',$this->updatedStatus[1]);
+        }
+        elseif($this->boldEnties[1]==true){
+            return redirect()->route('dashboard');
+        }else{
+            return redirect()->route('chart',$c_id)->with('success', 'Data imported successfully!');
+        }
             
-        return redirect()->route('dashboard')->with('success', 'Data imported successfully!');
     }
 
     public function erase(){
         
         IncomeStatement::truncate();
         Company::truncate();
+        BoldValue::truncate();
         return back();
     }
+
+    public function deleteCompany($id)
+{
+    $company = Company::find($id);
+
+    if ($company) {
+        IncomeStatement::where('company_id', $id)->delete();
+        BoldValue::where('company_id', $id)->delete();
+        $company->delete();
+
+        return redirect()->back()->with('success', 'Company and related records deleted successfully!');
+    }
+
+    return redirect()->back()->with('error', 'Company not found.');
+}
+
+
     public function showCompanies(Request $request)
     {
         $query = $request->get('search');
@@ -66,14 +95,16 @@ class IncomeStatementController extends Controller
     
         if (!empty($this->boldEnties)) {
             // Store the bold values in the database if they exist
-            BoldValue::create([
-                'company_id' => $id,
-                'bold_values' => json_encode($this->boldEnties),
-            ]);
+            BoldValue::updateOrCreate(
+            ['company_id' => $id], // Conditions to find an existing record
+            ['bold_values' => json_encode($this->boldEnties)] // Attributes to update or create
+        );
         }
     
         // Delete the bold entries from the session after storage
         session()->forget('boldEnties');
+        $this->boldEnties=[];
+        $company_name=Company::find($id);
     
         // Retrieve stored bold values from the database
         $storedBoldValues = BoldValue::where('company_id', $id)->pluck('bold_values')->first();
@@ -95,6 +126,7 @@ class IncomeStatementController extends Controller
     
         return view('income.chart', [
             'data' => $groupedDataByCategory,
+            'company_id'=>$company_name->name,
         ]);
     }
     
@@ -102,5 +134,13 @@ class IncomeStatementController extends Controller
     public function logout(){
         Auth::logout();
         return redirect()->route('welcome');
+    }
+
+
+    public function updatedCompany($id){
+        $data=Company::find($id);
+        return view('income.updated',[
+            'updated_company'=>$data,
+        ]);
     }
 }

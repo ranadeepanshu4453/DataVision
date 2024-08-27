@@ -2,10 +2,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <x-slot name="header">
+    @if(session('success'))
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded relative" role="alert">
+        <strong class="font-bold">Success!</strong>
+        <span class="block sm:inline">{{ session('success') }}</span>
+        <span class="absolute top-0 bottom-0 right-0 px-4 py-3">
+            
+        </span>
+    </div>
+@endif
         <div class="flex justify-between">
             <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                {{ __('Charts') }} 
+                {{ __('Report') }} <br> <span style="color:darkgreen;">Company:: {{$company_id}}</span> 
             </h2>
+            
+
         </div>
         <a href="{{ route('company') }}" class="text-blue-600 hover:text-blue-800 flex items-center ml-auto float-right">
         <!-- Back Arrow Icon -->
