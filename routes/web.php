@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\IncomeStatementController;
 use App\Http\Controllers\ProfileController;
+use App\Notifications\ImportNotification;
 use Illuminate\Support\Facades\Route;
 
 
@@ -32,6 +33,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/delete-company/{id}', [IncomeStatementController::class, 'deleteCompany'])->name('delete.company');
     //updated Companies
     Route::get('update-company/{id}', [IncomeStatementController::class, 'updatedCompany'])->name('update.company');
+
+    //notification
+   
 
 });
 

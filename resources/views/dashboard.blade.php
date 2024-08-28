@@ -2,8 +2,8 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <x-slot name="header">
         
-        <div class="flex justify-between items-center bg-gray-200 p-4 shadow-md rounded-lg">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+        <div class="flex justify-between items-center bg-white p-4 shadow-md rounded-lg">
+            <h2 class="font-semibold text-xl text-indigo-600 leading-tight">
                 {{ __('Dashboard') }}
             </h2>
         </div>
@@ -42,7 +42,7 @@
                 />
                 <button
                     type="submit"
-                    class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+                    class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-150 ease-in-out"
                     aria-label="Search"
                 >
                 <svg class="w-6 h-6 text-white dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20">
@@ -66,8 +66,14 @@
             </a>
 
             <h3 class="text-lg font-semibold mb-4 text-center">{{ $company->name }}</h3>
-            <a href="{{ route('chart', $company->id) }}" class="inline-block px-6 py-3 bg-white text-black font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-150 ease-in-out">
-                View Report
+            <a href="{{ route('chart', $company->id) }}" >
+            <!-- class="inline-block px-6 py-3 bg-white text-black font-semibold rounded-lg shadow-md hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-blue-500 transition-all duration-150 ease-in-out" -->
+            <div class="flex items-center justify-center h-12 w-12 bg-white text-indigo-600 rounded-full">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4 20v-6m4 6v-10m4 10v-14m4 14v-8m4 8v-4" />
+    </svg>
+</div>
+
             </a>
         </div>
         @endforeach

@@ -7,9 +7,12 @@ use App\Imports\IncomeStatementImport;
 use App\Models\BoldValue;
 use App\Models\Company;
 use App\Models\IncomeStatement;
+use App\Models\Notification as ModelsNotification;
+use App\Notifications\ImportNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Notification;
 
 class IncomeStatementController extends Controller
 {
@@ -21,7 +24,7 @@ class IncomeStatementController extends Controller
     public function import(Request $request)
     {
        
-        
+ 
         $request->validate([
             'file' => 'required|mimes:xlsx,xls|max:2048', // Limit file size to 2MB
         ]);
@@ -40,6 +43,13 @@ class IncomeStatementController extends Controller
     //    $bolddata= Excel::import(new IncomeStatementImport($fullPath),storage_path('app/' . $path));
         // Excel::import(new CompaniesImport, $request->file('file'));
 
+
+        //sending notification 
+        $user=Auth::user();
+        
+        $user->notify(new ImportNotification("New File Imported at::",$fullPath));
+        // 
+
         $c_id=Company::latest()->first()->id;
         if($this->updatedStatus[0]==true){
             return redirect()->route('update.company',$this->updatedStatus[1]);
@@ -47,6 +57,7 @@ class IncomeStatementController extends Controller
         elseif($this->boldEnties[1]==true){
             return redirect()->route('dashboard');
         }else{
+
             return redirect()->route('chart',$c_id)->with('success', 'Data imported successfully!');
         }
             
@@ -57,6 +68,8 @@ class IncomeStatementController extends Controller
         IncomeStatement::truncate();
         Company::truncate();
         BoldValue::truncate();
+        ModelsNotification::truncate();
+
         return back();
     }
 

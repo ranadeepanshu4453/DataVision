@@ -56,7 +56,7 @@
     <!-- Sidebar component, swap this element with another sidebar if you like -->
     <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-indigo-600 px-6 pb-4">
         <div class="flex h-16 shrink-0 items-center">
-        <span class="text-black text-xl bg-white px-7 py-2 rounded-lg "><b>Income Statement</b></span>
+        <span class="text-indigo-600 text-xl bg-white px-7 py-2 rounded-lg "><b>Income Statement</b></span>
 
             <!-- <img class="h-8 w-auto" src="https://tailwindui.com/img/logos/mark.svg?color=white" alt="Your Company"> -->
         </div>
