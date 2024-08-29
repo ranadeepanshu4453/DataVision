@@ -1,0 +1,11 @@
+
+  /* Show the dropdown on hover */
+  .relative:hover #dropdownMenu {
+    display: block;
+  }
+
+  /* Custom scrollbar styling */
+  .scrollable {
+    scrollbar-width: thin; /* For Firefox */
+    scrollbar-color: #4f46e5 #e5e7eb; /* For Firefox */
+  }

@@ -19,6 +19,7 @@ class IncomeStatementController extends Controller
    
     public $boldEnties= [];
     public $updatedStatus=[];
+    public $fileUpdated=0;
     
     //
     public function import(Request $request)
@@ -47,17 +48,21 @@ class IncomeStatementController extends Controller
         //sending notification 
         $user=Auth::user();
         
-        $user->notify(new ImportNotification("New File Imported at::",$fullPath));
+        
         // 
 
         $c_id=Company::latest()->first()->id;
         if($this->updatedStatus[0]==true){
+            //sending notifications
+            $user->notify(new ImportNotification("File Updated :: ".basename($fullPath),""));
+            $this->fileUpdated++;
+            //
             return redirect()->route('update.company',$this->updatedStatus[1]);
         }
         elseif($this->boldEnties[1]==true){
             return redirect()->route('dashboard');
         }else{
-
+            $user->notify(new ImportNotification("New File Imported :: ".basename($fullPath),""));
             return redirect()->route('chart',$c_id)->with('success', 'Data imported successfully!');
         }
             
@@ -96,7 +101,7 @@ class IncomeStatementController extends Controller
         $companies = Company::when($query, function($queryBuilder) use ($query) {
             $queryBuilder->where('name', 'like', "%{$query}%");
         })->get();
-
+        
         return view('dashboard', compact('companies'));
     }
 
@@ -156,4 +161,5 @@ class IncomeStatementController extends Controller
             'updated_company'=>$data,
         ]);
     }
+
 }

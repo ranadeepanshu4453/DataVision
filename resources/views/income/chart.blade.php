@@ -78,7 +78,9 @@
 
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script>
+    <!-- <script src="https://127.0.0.1:8000/js/chart.js"></script> -->
+     <script>
+        
         let graphtype = "bar";
         const chartInstances = [];
 
@@ -140,9 +142,9 @@
                 createCharts(graphtype); // Update charts on toggle 
             });
         });
-    </script>
+    
+// for print logic----------------------->
 
-    <script>
         document.getElementById('printBtn').addEventListener('click', function () {
             const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
@@ -159,6 +161,7 @@
                 windowWidth: 650
             });
         });
-    </script>
+   
+     </script>
     @endpush
 </x-app-layout>

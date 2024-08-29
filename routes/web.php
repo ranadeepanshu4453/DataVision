@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\CompareController;
 use App\Http\Controllers\IncomeStatementController;
 use App\Http\Controllers\ProfileController;
 use App\Notifications\ImportNotification;
@@ -14,7 +15,6 @@ Route::get('/', function () {
 Route::get('/dashboard', [IncomeStatementController::class, 'showCompanies'])
     ->middleware(['auth', 'verified'])
     ->name('dashboard');
-
 
 Route::middleware('auth')->group(function () {
     // Profile management routes
@@ -34,8 +34,9 @@ Route::middleware('auth')->group(function () {
     //updated Companies
     Route::get('update-company/{id}', [IncomeStatementController::class, 'updatedCompany'])->name('update.company');
 
-    //notification
-   
+    //compare companies
+   Route::get('compare-companies',[CompareController::class,'index'])->name('compare');
+   Route::post('compareCompanies',[CompareController::class,'compare'])->name('compareCompanies');
 
 });
 
