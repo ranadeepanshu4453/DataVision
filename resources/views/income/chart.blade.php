@@ -20,20 +20,13 @@
             Back
         </a>
         <br>
-        <!--  -->
         <div class="flex items-center space-x-2">
-  <!-- SVG Icon with onclick event -->
-  <svg class="h-8 w-8 text-indigo-600 cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="window.print()">
-    <polyline points="6 9 6 2 18 2 18 9" />
-    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
-    <rect x="6" y="14" width="12" height="8" />
-  </svg>
-
-  <!-- Removed Print Button -->
-  <!-- You can add any additional elements here if needed -->
-</div>
-
-
+            <svg class="h-8 w-8 text-indigo-600 cursor-pointer" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" onclick="window.print()">
+                <polyline points="6 9 6 2 18 2 18 9" />
+                <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2" />
+                <rect x="6" y="14" width="12" height="8" />
+            </svg>
+        </div>
         <br>
         <div class="float-right">
             <label for="toggleEigh" class="flex items-center cursor-pointer select-none text-dark dark:text-white">
@@ -74,94 +67,15 @@
             @endforeach
         </div>
     </div>
+    
+    <!-- Embed chartData as JSON -->
+    <script id="chartData" type="application/json">
+        {!! json_encode($chartData) !!}
+    </script>
     @endsection
 
     @push('scripts')
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- <script src="https://127.0.0.1:8000/js/chart.js"></script> -->
-     <script>
-        
-        let graphtype = "bar";
-        const chartInstances = [];
-
-        document.addEventListener('DOMContentLoaded', function () {
-            const chartData = @json($chartData);
-
-            // Function to create charts
-            function createCharts(type) {
-                // Clear existing charts
-                chartInstances.forEach(instance => instance.destroy());
-                chartInstances.length = 0; // Clear the array
-
-                chartData.forEach(data => {
-                    const ctx = document.getElementById(data.id).getContext('2d');
-
-                    const chart = new Chart(ctx, {
-                        type: type, // Use the current graph type
-                        data: {
-                            labels: data.labels,
-                            datasets: [{
-                                label: data.label,
-                                data: data.values,
-                                backgroundColor: [
-                                    'rgba(255, 99, 132, 0.2)',
-                                    'rgba(54, 162, 235, 0.2)',
-                                    'rgba(255, 206, 86, 0.2)',
-                                    'rgba(75, 192, 192, 0.2)',
-                                    'rgba(153, 102, 255, 0.2)',
-                                    'rgba(255, 159, 64, 0.2)'
-                                ],
-                                borderColor: [
-                                    'rgba(255, 99, 132, 1)',
-                                    'rgba(54, 162, 235, 1)',
-                                    'rgba(255, 206, 86, 1)',
-                                    'rgba(75, 192, 192, 1)',
-                                    'rgba(153, 102, 255, 1)',
-                                    'rgba(255, 159, 64, 1)'
-                                ],
-                                borderWidth: 1
-                            }]
-                        },
-                        options: {
-                            scales: {
-                                y: {
-                                    beginAtZero: true
-                                }
-                            }
-                        }
-                    });
-
-                    chartInstances.push(chart); // Store the chart instance
-                });
-            }
-
-            createCharts(graphtype); // Initialize charts with default type
-
-            document.getElementById('toggleEigh').addEventListener('change', function () {
-                graphtype = this.checked ? 'line' : 'bar';
-                createCharts(graphtype); // Update charts on toggle 
-            });
-        });
-    
-// for print logic----------------------->
-
-        document.getElementById('printBtn').addEventListener('click', function () {
-            const { jsPDF } = window.jspdf;
-            const doc = new jsPDF();
-
-            let content = document.getElementById('content-to-print'); // Replace with your content's ID
-
-            doc.html(content, {
-                callback: function (doc) {
-                    doc.save('screen-data.pdf');
-                },
-                x: 10,
-                y: 10,
-                width: 190,
-                windowWidth: 650
-            });
-        });
-   
-     </script>
+    <script src="{{ asset('js/chart.js') }}"></script>
     @endpush
 </x-app-layout>

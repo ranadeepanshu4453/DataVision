@@ -35,12 +35,10 @@ Route::middleware('auth')->group(function () {
     //updated Companies
     Route::get('update-company/{id}', [IncomeStatementController::class, 'updatedCompany'])->name('update.company');
 
-    //compare companies
-   Route::get('compare-companies',[CompareController::class,'index'])->name('compare');
-   Route::post('compareCompanies',[CompareController::class,'compare'])->name('compareCompanies');
-
    //unread-read notifications
    Route::get('readNotification/{id}',[NotificationController::class,'read'])->name('read');
+   //demo
+   Route::view('demo','income.demo');
 
 });
 

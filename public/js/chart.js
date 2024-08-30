@@ -57,20 +57,3 @@ document.addEventListener('DOMContentLoaded', function () {
         createCharts(graphtype);
     });
 });
-
-document.getElementById('printBtn').addEventListener('click', function () {
-    const { jsPDF } = window.jspdf;
-    const doc = new jsPDF();
-
-    let content = document.getElementById('content-to-print');
-
-    doc.html(content, {
-        callback: function (doc) {
-            doc.save('screen-data.pdf');
-        },
-        x: 10,
-        y: 10,
-        width: 190,
-        windowWidth: 650
-    });
-});

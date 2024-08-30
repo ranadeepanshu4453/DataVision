@@ -27,6 +27,7 @@
   <div id="dropdownMenu" style="width: 40rem; position:absolute; top:60%;" class="absolute right-50 mt-2 w-auto bg-white border border-gray-200 rounded-lg shadow-lg hidden group-hover:block">
     <div style="text-align:center; max-height: 300px; overflow-y: auto;" class="scrollable">
       <ul>
+      
         @foreach (Auth::user()->unreadNotifications as $notification)
         <a href="{{route('read',['id'=>$notification->id])}}"><li class="relative px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-indigo-500">
               <div class="flex justify-between">
@@ -46,10 +47,6 @@
     </div>
   </div>
 </div>
-
-
-
-
 
 <!--  -->
     <!-- <div>hi</div>
