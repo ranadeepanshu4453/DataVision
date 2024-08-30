@@ -1,7 +1,7 @@
 <script src="{{asset('js/script.js')}}"></script>
 <link rel="stylesheet" href="{{asset('css/header.css')}}">
 
-<div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-indigo-50 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
+<div class="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-gray-200 bg-indigo-600 px-4 shadow-sm sm:gap-x-6 sm:px-6 lg:px-8">
     <button type="button" class="-m-2.5 p-2.5 text-gray-700 lg:hidden">
         <span class="sr-only">Open sidebar</span>
         <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" aria-hidden="true">
@@ -16,7 +16,7 @@
         <!-- notification bell icon -->
         <div class="relative inline-block text-left group">
   <!-- Button to toggle the dropdown -->
-  <button id="dropdownButton" type="button" class="absolute top-5 inline-flex items-center text-sm font-medium text-center text-indigo-500 hover:text-gray-900 focus:outline-none dark:hover:text-white dark:text-gray-400">
+  <button id="dropdownButton" type="button" class="absolute top-5 inline-flex items-center text-sm font-medium text-center text-indigo-50 hover:text-gray-900 focus:outline-none dark:hover:text-white dark:text-gray-400">
   <svg class="w-7 h-7" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 14 20">
     <path d="M12.133 10.632v-1.8A5.406 5.406 0 0 0 7.979 3.57.946.946 0 0 0 8 3.464V1.1a1 1 0 0 0-2 0v2.364a.946.946 0 0 0 .021.106 5.406 5.406 0 0 0-4.154 5.262v1.8C1.867 13.018 0 13.614 0 14.807 0 15.4 0 16 .538 16h12.924C14 16 14 15.4 14 14.807c0-1.193-1.867-1.789-1.867-4.175ZM3.823 17a3.453 3.453 0 0 0 6.354 0H3.823Z"/>
 </svg>
@@ -28,17 +28,19 @@
     <div style="text-align:center; max-height: 300px; overflow-y: auto;" class="scrollable">
       <ul>
         @foreach (Auth::user()->unreadNotifications as $notification)
-          <li class="relative px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-indigo-500">
-            <div class="flex justify-between">
-              <div>
-                <strong>{{ $notification->data['title'] }}</strong>
-                <p>{{ $notification->data['message'] }}</p>
+        <a href="{{route('read',['id'=>$notification->id])}}"><li class="relative px-4 py-2 border-b border-gray-200 dark:border-gray-700 text-indigo-500">
+              <div class="flex justify-between">
+                <div>
+                  <strong>{{ $notification->data['title'] }}</strong>
+                  <p>{{ $notification->data['message'] }}</p>
+                </div>
+                <span class="absolute top-2 right-2 text-sm text-indigo-500 dark:text-gray-400">
+                  {{ $notification->created_at->format('M d, Y H:i') }}
+                </span>
               </div>
-              <span class="absolute top-2 right-2 text-sm text-indigo-500 dark:text-gray-400">
-                {{ $notification->created_at->format('M d, Y H:i') }}
-              </span>
-            </div>
-          </li>
+            </li>
+           </a> 
+          
         @endforeach
       </ul>
     </div>
@@ -58,7 +60,7 @@
 
         <div class="flex items-center gap-x-4 lg:gap-x-6 ml-auto">
             <!-- Profile dropdown -->
-            <div class="relative bg-indigo-600 px-7 py-2 rounded-lg text-white" x-data="{ open : false }">
+            <div class="relative bg-indigo-500 px-7 py-2 rounded-lg text-white" x-data="{ open : false }">
                 <button type="button" @click="open = !open" class="-m-1.5 flex items-center p-1.5" id="user-menu-button" aria-expanded="false" aria-haspopup="true">
                     <span class="sr-only">Open user menu</span>
                     

@@ -6,8 +6,10 @@ use App\Imports\CompaniesImport;
 use App\Imports\IncomeStatementImport;
 use App\Models\BoldValue;
 use App\Models\Company;
+use App\Models\Notification as noti;
 use App\Models\IncomeStatement;
 use App\Models\Notification as ModelsNotification;
+use App\Models\User;
 use App\Notifications\ImportNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -54,8 +56,10 @@ class IncomeStatementController extends Controller
         $c_id=Company::latest()->first()->id;
         if($this->updatedStatus[0]==true){
             //sending notifications
+            $this->fileUpdated = session('fileUpdated', 0) + 1;
+            session(['fileUpdated' => $this->fileUpdated]);
+        //
             $user->notify(new ImportNotification("File Updated :: ".basename($fullPath),""));
-            $this->fileUpdated++;
             //
             return redirect()->route('update.company',$this->updatedStatus[1]);
         }
@@ -74,6 +78,7 @@ class IncomeStatementController extends Controller
         Company::truncate();
         BoldValue::truncate();
         ModelsNotification::truncate();
+        session()->forget(['fileUpdated','visit']);
 
         return back();
     }
@@ -96,13 +101,24 @@ class IncomeStatementController extends Controller
 
     public function showCompanies(Request $request)
     {
+        $visit = session('visit', 0);
+        if (Auth::check() && Auth::user()->user_type == "user") {
+            $visit++; 
+            session(['visit' => $visit]); 
+        }
+        $userVisit=session('visit');
+        $countCompany=Company::count();
+        $fileupdated=session('fileUpdated', 0);
+        
+        $totalUser=User::count();
         $query = $request->get('search');
+        $notifications=noti::where('read_at',null)->count();
         
         $companies = Company::when($query, function($queryBuilder) use ($query) {
             $queryBuilder->where('name', 'like', "%{$query}%");
         })->get();
         
-        return view('dashboard', compact('companies'));
+        return view('dashboard', compact('companies','countCompany','fileupdated','totalUser','notifications','userVisit'));
     }
 
 

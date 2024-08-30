@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\CompareController;
 use App\Http\Controllers\IncomeStatementController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\ProfileController;
 use App\Notifications\ImportNotification;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +38,9 @@ Route::middleware('auth')->group(function () {
     //compare companies
    Route::get('compare-companies',[CompareController::class,'index'])->name('compare');
    Route::post('compareCompanies',[CompareController::class,'compare'])->name('compareCompanies');
+
+   //unread-read notifications
+   Route::get('readNotification/{id}',[NotificationController::class,'read'])->name('read');
 
 });
 

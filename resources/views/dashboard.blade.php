@@ -7,6 +7,8 @@
                 {{ __('Dashboard') }}
                 <!-- container -->
                 @include('partials.container')
+                <!-- {{$countCompany}} -->
+                 
                 <!--  -->
             </h2>
         </div>

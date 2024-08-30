@@ -14,4 +14,16 @@ class NotificationController extends Controller
 
     //     $user->notify(new ImportNotification("title","message"));
     // }
+
+
+    public function read($id){
+        $notification = auth()->user()->notifications->where('id', $id)->first();
+
+        if ($notification) {
+            $notification->markAsRead();
+        }
+        return back();
+        
+
+    }
 }
